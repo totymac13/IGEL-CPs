@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1e3a8a"><meta name="description" content="Tu agenda diaria, hábitos y presupuesto en un solo lugar.">
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="icon-192.png">
+<title>TOTY Planner</title><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app-shell">
+<header class="topbar"><div class="brand-mark">T</div><div class="brand"><strong>TOTY <span>PLANNER</span></strong><small>Organiza tu día, a tu manera</small></div><button id="themeToggle" class="theme-toggle" type="button" aria-label="Activar modo oscuro" title="Cambiar tema">☾</button><button id="installBtn" class="install-btn hidden">Instalar</button></header>
+<nav class="tabs" aria-label="Navegación principal"><button class="tab active" data-tab="agenda" type="button"><span class="tab-icon">⌂</span><span>Inicio</span></button><button class="tab" data-tab="habitos" type="button"><span class="tab-icon">✦</span><span>Hábitos</span></button><button class="tab" data-tab="balance" type="button"><span class="tab-icon">€</span><span>Balance</span></button></nav>
+<main>
+<section id="agenda" class="view active">
+<div class="welcome"><div><p class="eyebrow" id="todayLabel">TU PLAN PARA HOY</p><h1 id="dayTitle">Tu día</h1><p class="muted">Un paso a la vez. Tú puedes.</p></div><button id="todayBtn" class="today-btn">Hoy ↗</button></div>
+<div class="daily-summary" aria-label="Resumen diario">
+ <div class="summary-head"><div><p class="eyebrow">A PRIMERA VISTA</p><h2>Tu resumen</h2></div><span class="summary-date" id="summaryDate">Hoy</span></div>
+ <div class="summary-grid">
+  <button class="summary-tile" type="button" data-summary-tab="agenda"><span class="summary-icon task-icon">✓</span><span class="summary-label">Tareas</span><strong id="summaryTasks">0/3</strong><small id="summaryTasksNote">por completar</small></button>
+  <button class="summary-tile" type="button" data-summary-tab="habitos"><span class="summary-icon habit-icon">✦</span><span class="summary-label">Hábitos</span><strong id="summaryHabits">0/5</strong><small id="summaryHabitsNote">completados</small></button>
+  <button class="summary-tile" type="button" data-summary-tab="balance"><span class="summary-icon money-icon">€</span><span class="summary-label">Balance de hoy</span><strong id="summaryBalance">0,00 €</strong><small id="summaryBalanceNote">gastos − ingresos</small></button>
+ </div>
+</div>
+<div class="calendar card"><div class="month-row"><button class="icon-btn" id="prevMonth" aria-label="Mes anterior">‹</button><h2 id="monthTitle">Mes</h2><button class="icon-btn" id="nextMonth" aria-label="Mes siguiente">›</button></div><div class="weekdays"><span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span></div><div id="calendarGrid" class="calendar-grid"></div></div>
+<div class="section-heading"><div><p class="eyebrow">ENFOQUE</p><h2>Tareas del día</h2></div><div class="task-heading-actions"><span class="counter" id="priorityCount">0/3</span><button id="addTask" class="add-btn" type="button">+ Añadir tarea</button></div></div>
+<div class="card priorities" id="priorityList"></div>
+<div class="section-heading"><div><p class="eyebrow">TU ESPACIO</p><h2>Anotaciones</h2></div><span class="saved-label">● Se guarda automáticamente</span></div>
+<div class="card notes-card"><textarea id="dailyNotes" placeholder="Escribe tus planes, ideas o recordatorios..."></textarea><label class="quick-label" for="quickNotes">Nota rápida</label><input id="quickNotes" placeholder="Algo que no quieres olvidar…"></div>
+<div class="section-heading"><div><p class="eyebrow">MOVIMIENTO</p><h2>Actividad física</h2></div></div>
+<div class="card fitness-card"><input id="workout" placeholder="¿Qué has entrenado hoy?"><input id="workoutFeeling" placeholder="Intensidad / sensaciones"><input id="workoutExtra" placeholder="Otro ejercicio o notas"></div>
+<div class="data-actions"><button id="exportBtn" class="secondary-btn">⇩ Descargar copia ahora</button><button id="importBtn" class="secondary-btn">⇧ Restaurar copia</button><input id="importFile" type="file" accept="application/json,.json" hidden><button id="printBtn" class="secondary-btn">▤ Imprimir / PDF</button></div><p id="backupStatus" class="backup-status" role="status" aria-live="polite">Guardado automático activo.</p><p class="backup-warning">Importante: si borras los datos del sitio o pierdes el dispositivo, el navegador puede borrar también sus copias locales. Descarga una copia JSON y guárdala fuera del dispositivo para poder restaurarla.</p>
+</section>
+<section id="habitos" class="view">
+<div class="welcome"><div><p class="eyebrow">PEQUEÑOS PASOS</p><h1>Mis hábitos</h1><p class="muted">Marca lo que hayas completado hoy.</p></div></div>
+<div class="habit-list card"><label class="habit-row"><span class="habit-emoji">💊</span><span class="habit-copy"><strong>Medicación</strong><small>Tu rutina de cuidado</small></span><input type="checkbox" data-habit="medicina"></label><label class="habit-row"><span class="habit-emoji">💪</span><span class="habit-copy"><strong>Gimnasio / movimiento</strong><small>Activa cuerpo y mente</small></span><input type="checkbox" data-habit="gimnasio"></label><label class="habit-row"><span class="habit-emoji">🧘</span><span class="habit-copy"><strong>Meditación</strong><small>Un momento para respirar</small></span><input type="checkbox" data-habit="meditacion"></label><label class="habit-row"><span class="habit-emoji">📚</span><span class="habit-copy"><strong>Lectura</strong><small>Dedica un momento a leer</small></span><input type="checkbox" data-habit="lectura"></label><label class="habit-row"><span class="habit-emoji">🥗</span><span class="habit-copy"><strong>Alimentación</strong><small>Cuida tus elecciones de comida</small></span><input type="checkbox" data-habit="alimentacion"></label></div>
+<div class="section-heading"><div><p class="eyebrow">TU PROGRESO</p><h2>Hoy lo has hecho</h2></div><span class="counter" id="habitCount">0/5</span></div><div class="progress-card card"><div class="progress-track"><div id="habitProgress" class="progress-fill"></div></div><p id="habitMessage" class="muted">Cada pequeño hábito cuenta.</p></div>
+</section>
+<section id="balance" class="view">
+ <div class="welcome"><div><p class="eyebrow">CLARIDAD FINANCIERA</p><h1>Mi balance</h1><p class="muted" id="balanceMonth">Este mes</p></div></div>
+ <div class="budget-card"><p>PRESUPUESTO MENSUAL (€)</p><div class="budget-input"><span>€</span><input type="number" min="0" step="0.01" id="monthlyBudget" placeholder="0,00" inputmode="decimal"></div><div class="budget-track"><div id="budgetProgress" class="budget-progress"></div></div><small id="budgetMessage">Define tu presupuesto para calcular lo disponible.</small></div>
+ <div class="money-stats"><div class="stat-card"><span>Gastos del mes</span><strong class="expense-text" id="monthExpenses">0,00 €</strong></div><div class="stat-card"><span>Ingresos del mes</span><strong class="income-text" id="monthIncome">0,00 €</strong></div><div class="stat-card"><span>Presupuesto restante</span><strong class="available-text" id="availableAmount">0,00 €</strong></div><div class="stat-card"><span>Balance neto</span><strong id="netAmount">0,00 €</strong></div></div>
+ <div class="section-heading"><div><p class="eyebrow">MOVIMIENTOS</p><h2>Registro de <span id="expenseDay">hoy</span></h2></div><button id="addExpense" class="add-btn">+ Añadir</button></div>
+ <div id="expenseList" class="expense-list card"></div><p class="muted small-note">Los movimientos se guardan en la fecha seleccionada. Puedes cambiar el tipo, la categoría y el importe.</p>
+ <div class="section-heading"><div><p class="eyebrow">ANÁLISIS MENSUAL</p><h2>Gastos por categoría</h2></div></div><div class="card finance-panel"><div id="categoryChart" class="category-chart"></div></div>
+ <div class="section-heading"><div><p class="eyebrow">PRESUPUESTO VS. REAL</p><h2>Comparación mensual</h2></div></div><div class="card finance-panel" id="budgetComparison"></div>
+ <div class="section-heading"><div><p class="eyebrow">TODOS LOS MOVIMIENTOS</p><h2>Historial del mes</h2></div><span class="counter" id="historyCount">0 movimientos</span></div><div id="movementHistory" class="card movement-history"></div>
+ </section>
+</main><footer><span class="footer-dot"></span> Tus datos se guardan en este dispositivo <button id="clearDayBtn" title="Vaciar datos del día seleccionado">Vaciar día</button></footer>
+</div><div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script src="app.js"></script>
+</body></html>
