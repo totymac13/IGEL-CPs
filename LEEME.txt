@@ -1,0 +1,16 @@
+TOTY Planner - versión unificada
+
+Incluye en la misma versión:
+- Tareas del día: añadir, marcar y eliminar tareas.
+- Balance económico: ingresos y gastos, categorías, resumen mensual, comparación con presupuesto e historial.
+- Copias de seguridad: descarga JSON e importación de una copia.
+- Guardado automático en localStorage y copia local adicional en IndexedDB cuando el navegador lo permite.
+- Service worker con caché actualizada para forzar la descarga de esta versión.
+
+Instalación:
+1. Descarga primero una copia JSON desde la versión actual si aún puedes acceder a ella.
+2. Sube y reemplaza index.html, app.js, style.css y sw.js en la raíz del repositorio GitHub.
+3. Haz Commit changes y espera a que GitHub Pages publique.
+4. Recarga la web. Si usas una app instalada, ciérrala por completo y vuelve a abrirla.
+
+Importante: la copia de IndexedDB sigue estando en el almacenamiento del navegador; no protege frente a borrar todos los datos del sitio o perder el dispositivo. Guarda periódicamente el JSON fuera del dispositivo.
