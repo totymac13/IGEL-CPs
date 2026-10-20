@@ -1,0 +1,27 @@
+TOTY PLANNER — versión Trabajo + Balance anual + colores
+
+Contenido:
+- index.html: interfaz principal.
+- style.css: diseño adaptable a iPhone y ordenador, colores por sección y turno, modo claro/oscuro.
+- app.js: agenda, tareas, citas, hábitos, balance, trabajo, copias de seguridad.
+- sw.js: caché de la aplicación (versión actualizada).
+- manifest.webmanifest e iconos: instalación como app web.
+
+Novedades:
+- Nueva pestaña Trabajo con calendario mensual y asignación de un turno por día.
+- Turnos: M, T, COCHE, C/M, C/T, FRANQ, D, V y DHA.
+- Horarios configurados según los datos facilitados. Sábados y domingos se tratan como fin de semana; los festivos se marcan manualmente en el selector Tipo de día.
+- COCHE solo se permite por defecto en días laborables. Si excepcionalmente corresponde, se puede cambiar el tipo de día a Laborable.
+- Resumen mensual y anual de turnos y horas con horario definido.
+- Balance con vista mensual/anual; el presupuesto anual suma los presupuestos mensuales guardados.
+- Citas: horario normal, todo el día, 24 horas exactas o varios días.
+- Paleta de colores por sección y turno, modo claro/oscuro.
+- Se conservan las funciones anteriores de agenda, hábitos, balance, copia JSON e intento de copia local adicional.
+
+Publicación en GitHub Pages:
+1. Descarga y descomprime el ZIP.
+2. Sube todos los archivos y carpetas de este ZIP al mismo directorio de la web en GitHub Pages, reemplazando los archivos de la versión anterior.
+3. Espera a que GitHub Pages publique los cambios y recarga la web. Si el iPhone muestra una versión antigua, cierra y vuelve a abrir la app; el service worker usa una nueva versión de caché.
+4. Antes de futuras actualizaciones, descarga una copia JSON desde TOTY Planner. Aunque exista guardado local, una copia externa es la protección más segura.
+
+Nota: los festivos oficiales no se detectan automáticamente en esta versión; se pueden marcar en Tipo de día. Los datos se guardan en el navegador/dispositivo y no se sincronizan entre dispositivos automáticamente.
