@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f766e"><meta name="description" content="Tu agenda diaria, deporte y presupuesto en un solo lugar.">
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="icon-192.png">
+<title>TOTY Planner</title><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app-shell">
+<header class="topbar"><div class="brand-mark">T</div><div class="brand"><strong>TOTY <span>PLANNER</span></strong><small>Organiza tu día, a tu manera</small></div><button id="themeToggle" class="theme-toggle" type="button" aria-label="Activar modo oscuro" title="Cambiar tema">☾</button><button id="installBtn" class="install-btn hidden">Instalar</button></header>
+<nav class="tabs" aria-label="Navegación principal"><button class="tab active" data-tab="agenda" type="button"><span class="tab-icon">⌂</span><span>Inicio</span></button><button class="tab" data-tab="trabajo" type="button"><span class="tab-icon">▦</span><span>Trabajo</span></button><button class="tab" data-tab="deporte" type="button"><span class="tab-icon">🏃</span><span>Deporte</span></button><button class="tab" data-tab="balance" type="button"><span class="tab-icon">€</span><span>Balance</span></button></nav>
+<main>
+<details class="cloud-panel" id="cloudPanel">
+ <summary>☁️ Sincronización privada <span id="cloudStatus">Configurar</span></summary>
+ <div class="cloud-panel-body">
+  <p class="muted">Conecta tu proyecto Supabase para usar los mismos datos en iPhone y ordenador. Usa solo la Project URL y la Publishable key; nunca una clave secret.</p>
+  <label class="appointment-field">Project URL<input id="cloudUrl" type="url" placeholder="https://tu-proyecto.supabase.co" autocomplete="url"></label>
+  <label class="appointment-field">Publishable key<input id="cloudKey" type="password" placeholder="sb_publishable_…" autocomplete="off"></label>
+  <button id="cloudSaveConfig" class="secondary-btn" type="button">Guardar configuración en este navegador</button>
+  <div class="cloud-auth-grid">
+   <label class="appointment-field">Correo electrónico<input id="cloudEmail" type="email" placeholder="tu@email.com" autocomplete="username"></label>
+   <label class="appointment-field">Contraseña<input id="cloudPassword" type="password" placeholder="Contraseña de Supabase" autocomplete="current-password"></label>
+  </div>
+  <div class="data-actions"><button id="cloudSignUp" class="secondary-btn" type="button">Crear cuenta</button><button id="cloudSignIn" class="add-btn" type="button">Iniciar sesión</button><button id="cloudSignOut" class="secondary-btn" type="button">Cerrar sesión</button></div>
+  <p id="cloudMessage" class="backup-status" role="status" aria-live="polite">Aún no conectado.</p>
+  <p class="muted">Después de iniciar sesión, elige explícitamente si quieres subir los datos de este dispositivo o descargar los datos de la nube. Esto evita sobrescribirlos por accidente.</p>
+  <div class="data-actions"><button id="cloudUpload" class="secondary-btn" type="button">Subir datos de este dispositivo</button><button id="cloudDownload" class="secondary-btn" type="button">Descargar datos de la nube</button></div>
+ </div>
+</details>
+<section id="agenda" class="view active">
+<div class="welcome"><div><p class="eyebrow" id="todayLabel">TU PLAN PARA HOY</p><h1 id="dayTitle">Tu día</h1><p class="muted">Un paso a la vez. Tú puedes.</p></div><button id="todayBtn" class="today-btn">Hoy ↗</button></div>
+<div class="daily-summary" aria-label="Resumen diario">
+ <div class="summary-head"><div><p class="eyebrow">A PRIMERA VISTA</p><h2>Tu resumen</h2></div><span class="summary-date" id="summaryDate">Hoy</span></div>
+ <div class="summary-grid">
+  <button class="summary-tile" type="button" data-summary-tab="agenda"><span class="summary-icon task-icon">✓</span><span class="summary-label">Tareas</span><strong id="summaryTasks">0/3</strong><small id="summaryTasksNote">por completar</small></button>
+  <button class="summary-tile" type="button" data-summary-tab="deporte"><span class="summary-icon habit-icon">🏃</span><span class="summary-label">Deporte</span><strong id="summaryHabits">0</strong><small id="summaryHabitsNote">sesiones registradas</small></button>
+  <button class="summary-tile" type="button" data-summary-tab="balance"><span class="summary-icon money-icon">€</span><span class="summary-label">Balance de hoy</span><strong id="summaryBalance">0,00 €</strong><small id="summaryBalanceNote">gastos − ingresos</small></button>
+ </div>
+<div id="nextAppointmentSummary" class="next-appointment-summary hidden" aria-live="polite"></div>
+</div>
+<div class="section-heading unified-heading"><div><p class="eyebrow">TODO EN UN SOLO SITIO</p><h2>Mi día, en orden</h2></div><span class="saved-label">Citas y tareas</span></div>
+<div id="dailyTimeline" class="card daily-timeline" aria-live="polite"></div>
+<div class="calendar card"><div class="month-row"><button class="icon-btn" id="prevMonth" aria-label="Mes anterior">‹</button><h2 id="monthTitle">Mes</h2><button class="icon-btn" id="nextMonth" aria-label="Mes siguiente">›</button></div><div class="weekdays"><span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span></div><div id="calendarGrid" class="calendar-grid"></div></div>
+<div class="section-heading appointment-heading"><div><p class="eyebrow">TU AGENDA</p><h2>Citas del día</h2></div><button id="toggleAppointmentForm" class="add-btn" type="button" aria-expanded="false">+ Añadir cita</button></div>
+<form id="appointmentForm" class="card appointment-form hidden">
+ <label class="appointment-field appointment-title-field">Nombre de la cita<input id="appointmentTitle" name="title" type="text" maxlength="120" placeholder="Ej. Cita médica" required></label>
+ <div class="appointment-form-grid">
+  <label class="appointment-field">Tipo de cita<select id="appointmentMode" name="mode"><option value="timed">Con horario</option><option value="allDay">Todo el día</option><option value="24h">24 horas exactas</option><option value="multi">Varios días</option></select></label>
+  <label class="appointment-field">Fecha<input id="appointmentDate" name="date" type="date" required></label>
+  <label class="appointment-field hidden" id="appointmentEndDateWrap">Último día<input id="appointmentEndDate" name="endDate" type="date"></label>
+  <label class="appointment-field">Empieza<input id="appointmentStart" name="start" type="time" value="09:00" required></label>
+  <label class="appointment-field">Termina<input id="appointmentEnd" name="end" type="time" value="09:30" required></label>
+  <label class="appointment-field">Avisarme antes<select id="appointmentReminder" name="reminder"><option value="0">Sin aviso</option><option value="5">5 minutos</option><option value="15" selected>15 minutos</option><option value="30">30 minutos</option><option value="60">1 hora</option><option value="1440">1 día</option></select></label>
+ </div>
+ <label class="appointment-field">Lugar<input id="appointmentLocation" name="location" type="text" maxlength="180" placeholder="Dirección o lugar (opcional)"></label>
+ <label class="appointment-field">Notas<textarea id="appointmentNotes" name="notes" rows="2" maxlength="1000" placeholder="Qué necesitas llevar o recordar…"></textarea></label>
+ <div class="appointment-form-actions"><button class="secondary-btn" id="cancelAppointmentForm" type="button">Cancelar</button><button class="add-btn" type="submit">Guardar cita</button></div>
+ <p class="appointment-reminder-note">Los avisos funcionan mientras la agenda esté abierta. iOS puede limitar las notificaciones si la app está cerrada.</p>
+</form>
+<div id="appointmentList" class="card appointment-list"></div>
+<div class="section-heading"><div><p class="eyebrow">ENFOQUE</p><h2>Tareas del día</h2></div><div class="task-heading-actions"><span class="counter" id="priorityCount">0/0</span><button id="addTask" class="add-btn" type="button">+ Añadir tarea</button></div></div>
+<div class="card priorities" id="priorityList"></div>
+<div class="section-heading"><div><p class="eyebrow">TU ESPACIO</p><h2>Anotaciones</h2></div><span class="saved-label">● Se guarda automáticamente</span></div>
+<div class="card notes-card"><textarea id="dailyNotes" placeholder="Escribe tus planes, ideas o recordatorios..."></textarea><label class="quick-label" for="quickNotes">Nota rápida</label><input id="quickNotes" placeholder="Algo que no quieres olvidar…"></div>
+<div class="section-heading"><div><p class="eyebrow">MOVIMIENTO</p><h2>Actividad física</h2></div></div>
+<div class="card fitness-card"><input id="workout" placeholder="¿Qué has entrenado hoy?"><input id="workoutFeeling" placeholder="Intensidad / sensaciones"><input id="workoutExtra" placeholder="Otro ejercicio o notas"></div>
+<div class="data-actions"><button id="exportBtn" class="secondary-btn">⇩ Descargar copia ahora</button><button id="importBtn" class="secondary-btn">⇧ Restaurar copia</button><input id="importFile" type="file" accept="application/json,.json" hidden><button id="printBtn" class="secondary-btn">▤ Imprimir / PDF</button></div><p id="backupStatus" class="backup-status" role="status" aria-live="polite">Guardado automático activo.</p><p class="backup-warning">Importante: si borras los datos del sitio o pierdes el dispositivo, el navegador puede borrar también sus copias locales. Descarga una copia JSON y guárdala fuera del dispositivo para poder restaurarla.</p>
+</section>
+<section id="trabajo" class="view">
+ <div class="welcome"><div><p class="eyebrow">MI CUADRANTE</p><h1>Trabajo</h1><p class="muted">Marca un turno por día y consulta tus totales.</p></div></div>
+ <div class="card work-calendar">
+  <div class="month-row"><button class="icon-btn" id="workPrevMonth" aria-label="Mes anterior">‹</button><h2 id="workMonthTitle">Mes</h2><button class="icon-btn" id="workNextMonth" aria-label="Mes siguiente">›</button></div>
+  <div class="weekdays"><span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span></div><div id="workCalendarGrid" class="calendar-grid work-calendar-grid"></div>
+  <div class="work-legend"><span><i class="shift-dot shift-M"></i>M</span><span><i class="shift-dot shift-T"></i>T</span><span><i class="shift-dot shift-CM"></i>C/M</span><span><i class="shift-dot shift-CT"></i>C/T</span><span><i class="shift-dot shift-V"></i>V</span></div>
+ </div>
+ <div class="card work-editor">
+  <div class="work-editor-title"><div><p class="eyebrow">DÍA SELECCIONADO</p><h2 id="workSelectedDate">Fecha</h2></div><span id="shiftBadge" class="shift-badge">Sin turno</span></div>
+  <label class="appointment-field">Turno<select id="shiftSelect"><option value="">Sin asignar</option><option value="M">M · Mañana</option><option value="T">T · Tarde</option><option value="COCHE">COCHE · Cocheras</option><option value="C/M">C/M · Calle de mañana</option><option value="C/T">C/T · Calle de tarde</option><option value="FRANQ">FRANQ · Franqueos</option><option value="D">D · Fiesta pedida</option><option value="V">V · Vacaciones</option><option value="DHA">DHA · Día por horas acumuladas</option></select></label>
+  <label class="appointment-field">Tipo de día<select id="workDayType"><option value="auto">Automático (según fecha)</option><option value="laborable">Laborable</option><option value="weekend">Fin de semana</option><option value="holiday">Festivo</option></select></label>
+  <p class="muted" id="shiftHours">Selecciona un turno para ver su horario.</p><button class="secondary-btn" id="clearShift" type="button">Quitar turno de este día</button>
+ </div>
+ <div class="section-heading"><div><p class="eyebrow">SEGUIMIENTO</p><h2>Resumen de turnos</h2></div></div>
+ <div class="period-controls"><div class="period-toggle"><button type="button" class="period-btn active" data-work-period="month">Mensual</button><button type="button" class="period-btn" data-work-period="year">Anual</button></div><label class="year-select-label">Año<select id="workYear"></select></label></div>
+ <div class="work-stats-grid" id="workStatsGrid"></div><div class="card work-hours-card"><div><span>Horas con horario definido</span><strong id="workHoursTotal">0 h</strong></div><small>FRANQ, D, V y DHA cuentan como días, pero no suman horas programadas.</small></div>
+ <p class="muted">Los festivos se pueden marcar manualmente en «Tipo de día». Los horarios se asignan según tu cuadrante configurado.</p>
+ </section>
+<section id="deporte" class="view sport-view">
+<div class="welcome sport-welcome"><div><p class="eyebrow">TU ESPACIO DE ENTRENAMIENTO</p><h1>Deporte</h1><p class="muted">Registra, mejora y consulta tu evolución.</p></div><div class="sport-date-pill"><span class="sport-pulse"></span><span id="sportSelectedDate">Sesiones de hoy</span></div></div>
+<div class="sport-quick-stats" aria-label="Resumen deportivo"><article class="sport-quick-stat"><span class="sport-stat-icon sport-icon-teal">◷</span><div><small>Sesiones hoy</small><strong id="sportTodaySessions">0</strong></div></article><article class="sport-quick-stat"><span class="sport-stat-icon sport-icon-blue">↗</span><div><small>Tiempo registrado</small><strong id="sportTodayTime">0 min</strong></div></article></div>
+<div class="sport-block-heading"><div><p class="eyebrow">¿QUÉ VAS A HACER?</p><h2>Nueva actividad</h2></div><span class="sport-step">01 / REGISTRO</span></div>
+<div class="sport-activity-grid"><button type="button" class="sport-activity-choice selected" data-sport-choice="Gimnasio"><span class="sport-choice-icon gym-choice">🏋️</span><strong>Gimnasio</strong><small>Ejercicios y pesos</small></button><button type="button" class="sport-activity-choice" data-sport-choice="Correr"><span class="sport-choice-icon run-choice">🏃</span><strong>Correr</strong><small>Distancia y ritmo</small></button><button type="button" class="sport-activity-choice" data-sport-choice="Bicicleta"><span class="sport-choice-icon bike-choice">🚴</span><strong>Bicicleta</strong><small>Tiempo y kilómetros</small></button><button type="button" class="sport-activity-choice" data-sport-choice="Monte / senderismo"><span class="sport-choice-icon hike-choice">⛰️</span><strong>Monte</strong><small>Ruta y desnivel</small></button><button type="button" class="sport-activity-choice" data-sport-choice="Caminar"><span class="sport-choice-icon walk-choice">🚶</span><strong>Caminar</strong><small>Paseos y distancia</small></button><button type="button" class="sport-activity-choice" data-sport-choice="Piscina"><span class="sport-choice-icon swim-choice">🏊</span><strong>Piscina</strong><small>Metros nadados</small></button><button type="button" class="sport-activity-choice" data-sport-choice="Otro"><span class="sport-choice-icon other-choice">＋</span><strong>Otro deporte</strong><small>Actividad libre</small></button></div>
+<div class="card sport-form sport-entry-card" id="sportEntryCard"><div class="sport-form-title"><div><p class="eyebrow">REGISTRO DE SESIÓN</p><h2 id="sportFormHeading">Entrenamiento de gimnasio</h2><p class="muted">Añade los detalles y guarda tu actividad.</p></div><span class="sport-form-symbol" id="sportFormSymbol">🏋️</span></div>
+ <label class="appointment-field">Deporte<select id="sportType"><option value="Gimnasio">Gimnasio</option><option value="Correr">Correr</option><option value="Caminar">Caminar</option><option value="Bicicleta">Bicicleta</option><option value="Monte / senderismo">Monte / senderismo</option><option value="Piscina">Piscina</option><option value="Otro">Otro</option></select></label>
+ <label class="appointment-field" data-sport-field="title">Nombre de la sesión<input id="sportTitle" placeholder="Ej. Pecho y tríceps, ruta por el monte"></label>
+ <div class="form-grid" data-sport-field="metrics"><label class="appointment-field" data-sport-field="duration">Duración (minutos)<input id="sportDuration" type="number" min="0" inputmode="numeric" placeholder="60"></label><label class="appointment-field" data-sport-field="distance">Distancia (km)<input id="sportDistance" type="number" min="0" step="0.01" inputmode="decimal" placeholder="5,5"></label></div>
+ <label class="appointment-field sport-meters-field" data-sport-field="meters">Piscina · metros nadados<input id="sportMeters" type="number" min="0" inputmode="numeric" placeholder="1.000"></label>
+ <label class="appointment-field" data-sport-field="details">Ejercicios / detalles<textarea id="sportDetails" rows="3" placeholder="Ej. Press banca: 3 series × 10 repeticiones, 40 kg…"></textarea><small class="field-hint" id="sportDetailsHint">En el gimnasio, apunta ejercicios, series, repeticiones y pesos.</small></label>
+ <label class="appointment-field" data-sport-field="notes">Notas personales<textarea id="sportNotes" rows="2" placeholder="Sensaciones, recorrido, desnivel…"></textarea></label>
+ <div class="form-actions"><button id="saveSport" class="primary-btn sport-save-button" type="button">Guardar entrenamiento</button><button id="clearSportForm" class="secondary-btn" type="button">Limpiar</button></div>
+</div>
+<div class="sport-routines-section"><div class="sport-block-heading"><div><p class="eyebrow">AHORRA TIEMPO</p><h2>Mis rutinas</h2><p class="muted">Guarda un entrenamiento y reutilízalo cuando quieras.</p></div><span class="sport-routine-mark">↻</span></div><div class="card sport-routine-builder"><label class="appointment-field">Nombre de la rutina<input id="routineName" placeholder="Ej. Pecho y tríceps"></label><label class="appointment-field">Ejercicios incluidos<textarea id="routineDetails" rows="3" placeholder="Press banca 3×10; aperturas 3×12; tríceps…"></textarea></label><button id="saveRoutine" class="secondary-btn" type="button">＋ Guardar nueva rutina</button><div id="routineList" class="sport-list"></div></div></div>
+<div class="sport-block-heading sport-history-heading"><div><p class="eyebrow">TU ACTIVIDAD</p><h2>Historial</h2><p class="muted">Sesiones del día seleccionado en el calendario.</p></div><span class="counter" id="sportDayCount">0 sesiones</span></div><div id="sportSessionList" class="sport-list"></div>
+<div class="sport-block-heading"><div><p class="eyebrow">SIGUE TU PROGRESO</p><h2>Estadísticas</h2><p class="muted">Consulta el tiempo, la distancia y tus sesiones.</p></div></div><div class="period-controls"><div class="period-toggle"><button type="button" class="period-btn active" data-sport-period="month">Mensual</button><button type="button" class="period-btn" data-sport-period="year">Anual</button></div><label class="year-select-label">Año<select id="sportYear"></select></label></div><div id="sportStats" class="money-stats sport-stats-grid"></div>
+</section>
+<section id="balance" class="view">
+ <div class="welcome"><div><p class="eyebrow">CLARIDAD FINANCIERA</p><h1>Mi balance</h1><p class="muted" id="balanceMonth">Este mes</p></div></div>
+ <div class="period-controls"><div class="period-toggle"><button type="button" class="period-btn active" data-balance-period="month">Mensual</button><button type="button" class="period-btn" data-balance-period="year">Anual</button></div><label class="year-select-label">Año<select id="balanceYear"></select></label></div>
+ <div class="budget-card" id="budgetCard"><p id="budgetHeading">PRESUPUESTO MENSUAL (€)</p><div class="budget-input"><span>€</span><input type="number" min="0" step="0.01" id="monthlyBudget" placeholder="0,00" inputmode="decimal"></div><div class="budget-track"><div id="budgetProgress" class="budget-progress"></div></div><small id="budgetMessage">Define tu presupuesto para calcular lo disponible.</small></div>
+ <div class="money-stats"><div class="stat-card"><span>Gastos del mes</span><strong class="expense-text" id="monthExpenses">0,00 €</strong></div><div class="stat-card"><span>Ingresos del mes</span><strong class="income-text" id="monthIncome">0,00 €</strong></div><div class="stat-card"><span>Presupuesto restante</span><strong class="available-text" id="availableAmount">0,00 €</strong></div><div class="stat-card"><span>Balance neto</span><strong id="netAmount">0,00 €</strong></div></div>
+ <div class="section-heading"><div><p class="eyebrow">MOVIMIENTOS</p><h2>Registro de <span id="expenseDay">hoy</span></h2></div><button id="addExpense" class="add-btn">+ Añadir</button></div>
+ <div id="expenseList" class="expense-list card"></div><p class="muted small-note">Los movimientos se guardan en la fecha seleccionada. Puedes cambiar el tipo, la categoría y el importe.</p>
+ <div class="section-heading"><div><p class="eyebrow" id="categoryEyebrow">ANÁLISIS MENSUAL</p><h2>Gastos por categoría</h2></div></div><div class="card finance-panel"><div id="categoryChart" class="category-chart"></div></div>
+ <div class="section-heading"><div><p class="eyebrow" id="comparisonEyebrow">PRESUPUESTO VS. REAL</p><h2 id="comparisonHeading">Comparación mensual</h2></div></div><div class="card finance-panel" id="budgetComparison"></div>
+ <div class="section-heading"><div><p class="eyebrow">TODOS LOS MOVIMIENTOS</p><h2 id="historyHeading">Historial del mes</h2></div><span class="counter" id="historyCount">0 movimientos</span></div><div id="movementHistory" class="card movement-history"></div>
+ </section>
+</main><footer><span class="footer-dot"></span> Tus datos se guardan en este dispositivo <button id="clearDayBtn" title="Vaciar datos del día seleccionado">Vaciar día</button></footer>
+</div><div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="app.js"></script>
+</body></html>
