@@ -1,0 +1,41 @@
+TOTY PLANNER — COPIAS DE SEGURIDAD
+==================================
+
+QUÉ INCLUYE ESTA VERSIÓN
+- Guardado normal en el navegador.
+- Copia local adicional en IndexedDB: última copia y hasta 30 días distintos mientras el navegador conserve su almacenamiento.
+- Exportación manual JSON y restauración con confirmación.
+- Copias manuales independientes en Supabase y pantalla para consultar/restaurar las últimas 30.
+- SQL para programar una copia diaria en el servidor a las 23:59, hora Europe/Madrid.
+- La restauración de una copia de la nube pausa la sincronización automática en ese dispositivo para reducir el riesgo de sobrescritura accidental.
+
+IMPORTANTE: LA NUBE NO ESTÁ CONFIGURADA AUTOMÁTICAMENTE
+Este ZIP no contiene credenciales ni puede crear un proyecto Supabase por ti. El backup diario remoto solo estará activo después de configurar Supabase y ejecutar el SQL incluido.
+
+CONFIGURACIÓN INICIAL
+1. Crea un proyecto en Supabase y conserva de forma segura su Project URL y su Publishable key. No uses una secret/service_role key en la app.
+2. En Supabase, abre SQL Editor, crea una consulta nueva y ejecuta el archivo SUPABASE-COPIAS-AUTOMATICAS.sql completo.
+3. En Authentication > Providers, comprueba que Email esté habilitado. Configura confirmación de correo según prefieras.
+4. Publica los archivos de este ZIP en el mismo repositorio GitHub Pages que usas para TOTY Planner.
+5. Abre TOTY Planner con internet. En “Sincronización privada”, introduce la Project URL y la Publishable key y pulsa “Guardar configuración”.
+6. Crea una cuenta o inicia sesión. En el primer dispositivo que contenga los datos correctos, pulsa “Subir datos de este dispositivo”. Haz antes una exportación JSON como respaldo adicional.
+7. Pulsa “Crear copia en la nube ahora” y luego “Ver copias guardadas” para verificar que la tabla de copias funciona.
+8. En Supabase > Integrations / Cron (o SQL Editor), revisa el job “toty-planner-daily-backup” y sus ejecuciones. El SQL consulta la hora de Europe/Madrid y genera una copia a las 23:59. Debe haber al menos una fila en planner_data para crear una copia.
+9. En el otro dispositivo, introduce la misma URL/Publishable key, inicia sesión y usa la sincronización con cuidado. La primera sincronización no se fusiona automáticamente: elige conscientemente subir o descargar.
+
+USO DIARIO
+- La app mantiene una copia local adicional mientras está abierta y guarda cambios.
+- La copia remota diaria se crea desde el servidor a las 23:59 hora peninsular, aunque el iPhone esté cerrado, siempre que Supabase/Cron esté activo y existan datos sincronizados en planner_data.
+- “Crear copia en la nube ahora” guarda una versión independiente al momento.
+- “Ver copias guardadas” permite revisar y restaurar una de las últimas 30 copias.
+- “Descargar copia ahora” produce un archivo JSON. Guárdalo en Archivos/iCloud Drive o en un ordenador.
+
+LÍMITES Y SEGURIDAD
+- No existe una copia remota hasta completar la configuración y verificar la primera copia.
+- El backup programado guarda los datos que están sincronizados en planner_data; si el dispositivo nunca subió sus cambios, esos cambios no estarán en el backup de la nube.
+- La restauración reemplaza los datos locales del dispositivo. La app pide confirmación y trata de conservar antes una copia local, pero se recomienda exportar un JSON antes de restaurar.
+- El almacenamiento local puede borrarse al limpiar datos del navegador, desinstalar o por decisiones del sistema operativo. No es un sustituto de la nube ni de la exportación.
+- Las copias contienen datos personales y financieros. Protege el correo y la contraseña de Supabase, usa un dispositivo bloqueado y nunca publiques claves secretas.
+- El SQL requiere que la extensión pg_cron esté disponible en el proyecto Supabase. Tras ejecutarlo, verifica la tabla cron.job y las ejecuciones. Si tu plan/proyecto no permite pg_cron, el backup programado no funcionará hasta habilitar una alternativa de programación.
+
+No se ha probado con credenciales reales ni en un proyecto Supabase real; verifica los pasos anteriores antes de confiar en el backup diario.
