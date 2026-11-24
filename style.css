@@ -417,3 +417,18 @@ button,.calendar-day,.tab,.add-btn,.secondary-btn,.delete-task,.delete-expense,.
 @keyframes quickActionIn{from{opacity:0;transform:translateY(7px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 @media(max-width:649px){.quick-action-wrap{right:max(14px,env(safe-area-inset-right));bottom:calc(88px + env(safe-area-inset-bottom));gap:8px}.quick-action-fab{min-height:50px;padding:0 15px;gap:6px}.quick-action-fab span{font-size:26px}.quick-action-fab small{font-size:12px}.quick-action-menu{width:min(300px,calc(100vw - 28px))}}
 @media(prefers-reduced-motion:reduce){.quick-action-fab,.quick-action-fab span,.quick-action-menu{transition:none;animation:none}}
+/* Indicadores de actividad en el calendario principal */
+#calendarGrid .calendar-day{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:42px;padding:3px 0}
+#calendarGrid .calendar-day.today:after{display:none}
+#calendarGrid .calendar-day.today{outline:2px solid #7d91bd;outline-offset:-2px;font-weight:800}
+#calendarGrid .calendar-day-number{line-height:1.15}
+#calendarGrid .calendar-markers{height:5px;display:flex;align-items:center;justify-content:center;gap:3px;line-height:0}
+#calendarGrid .calendar-marker{display:block;width:5px;height:5px;border-radius:50%;background:#3155b7}
+#calendarGrid .calendar-marker.marker-appointment{background:#0f9b8e}
+#calendarGrid .calendar-marker.marker-note{background:#d49a36}
+#calendarGrid .calendar-day.selected{outline:0}
+#calendarGrid .calendar-day.selected .calendar-marker{box-shadow:0 0 0 1px #ffffffa8}
+:root[data-theme="dark"] #calendarGrid .calendar-day.today{outline-color:#91a9d8}
+:root[data-theme="dark"] #calendarGrid .calendar-marker{background:#91aaff}
+:root[data-theme="dark"] #calendarGrid .calendar-marker.marker-appointment{background:#55cbb9}
+:root[data-theme="dark"] #calendarGrid .calendar-marker.marker-note{background:#efc16b}

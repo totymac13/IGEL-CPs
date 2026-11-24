@@ -1,4 +1,4 @@
-const CACHE = 'toty-planner-pwa-v16';
+const CACHE = 'toty-planner-pwa-v17';
 const APP_SHELL = [
   './',
   './index.html',
